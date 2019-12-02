@@ -124,8 +124,7 @@ class MLP(object):
                 else:
                     stopping += 1
 
-#                 if stopping >= self.early_stopping:
-                if stopping >= 1:
+                if stopping >= self.early_stopping:
                     print("early stop at epoch %d" % epoch)
                     break
 
