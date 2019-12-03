@@ -250,8 +250,6 @@ class DataProcessor(object):
         postag_tfidfs = postag_tfidf_vectorizer.fit_transform(self.pos_tags)
         postag_tfidfs_features = postag_tfidfs.toarray()
         
-#         print(str(len(features))+","+str(len(postag_tfidfs_features)))
-#         print(str(len(features[0]))+","+str(len(postag_tfidfs_features[-1])))
         features = np.append(features, postag_tfidfs_features[-1])
         print(len(postag_tfidf_vectorizer.get_feature_names()))
         del postag_tfidfs_features

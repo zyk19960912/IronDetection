@@ -70,7 +70,7 @@
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" id="option4" name="inlineOptions" value="sentence_a">
-            <label class="form-check-label" for="option4">Networmk</label>
+            <label class="form-check-label" for="option4">ANN</label>
           </div>
         </form>
         <p class="lead emoji-picker-container">
@@ -189,7 +189,7 @@
     socket.on('response', function (data) {
       $('#wait').hide();
       $('#go').show();
-      if (data == "1") {
+      if (data[0] == "1") {
         $('#success').modal('show');
       } else {
         $('#failure').modal('show');
@@ -202,16 +202,17 @@
     });
 
     function submit() {
-      const option = $("#optionForm").serializeArray()[0].value;
+      let option = $("#optionForm").serializeArray();
       const sentence = document.getElementById("sentence").value;
       const contenteditable = document.getElementById("contenteditable")
       console.log(sentence);
       console.log(option);
       if (connected) {
-        if (option == null) {
+        if (option.length == 0) {
           window.alert("you must choose one option");
           return;
         }
+        option = option[0].value;
         if (sentence == null || $.trim(sentence) == '') {
           window.alert("your input is null");
           return;

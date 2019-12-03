@@ -9,6 +9,13 @@ This program provides a simple web application for the SemEval 2018 Task 3: Iron
     }
 
 and we made some modifications to the model.
+## Performance
+We compared the model with several different methodss:
+| Model      | F1-Score |
+| ANN        | 0.717526 |
+| RidgeClassifier      | 0.659039 |
+| Logistic Regression   | 0.674473 |
+| SVM        | 0.658933  |
 ## Package installation
 To run the code, you need the following software packages by running **`pip install -r requirements.txt`**:
 ## Run the program

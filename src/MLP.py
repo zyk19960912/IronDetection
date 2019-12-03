@@ -3,6 +3,8 @@ import random
 import tensorflow as tf
 import numpy as np
 from sklearn.metrics import f1_score
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
+from sklearn import svm
 
 
 class MLP(object):
@@ -134,8 +136,48 @@ class MLP(object):
 #                        self.predict_labels(valid_features, features_pl, keep_prob_pl, predict, sess), \
 #                        self.predict_labels(test_features, features_pl, keep_prob_pl, predict, sess), best_valid
     
+    def rg_train_model(self,train_data, valid_data, task_name="A"):
+        train_features = train_data["feature"]
+        train_labels = train_data["label"]
+        valid_features = valid_data["feature"]
+        valid_labels = valid_data["label"]
+        rg = RidgeClassifier(max_iter=100)
+        rg.fit(train_features, train_labels)
+        pred_valid_labels = rg.predict(valid_features)
+        if task_name == "A":
+            f1_valid = f1_score(valid_labels, pred_valid_labels,  pos_label=1)
+        else: f1_valid = f1_score(valid_labels, pred_valid_labels,  average="macro")
+        print("RidgeRegressionClassifier's F1 on valid : %f" % f1_valid)
+        return rg
     
-    
+
+    def svm_train_model(self,train_data, valid_data, task_name="A"):
+        train_features = train_data["feature"]
+        train_labels = train_data["label"]
+        valid_features = valid_data["feature"]
+        valid_labels = valid_data["label"]
+        clf = svm.LinearSVC()
+        clf.fit(train_features, train_labels)
+        pred_valid_labels = clf.predict(valid_features)
+        if task_name == "A":
+            f1_valid = f1_score(valid_labels, pred_valid_labels,  pos_label=1)
+        else: f1_valid = f1_score(valid_labels, pred_valid_labels,  average="macro")
+        print("SVM's F1 on valid : %f" % f1_valid)
+        return clf
+
+    def lg_train_model(self,train_data, valid_data, task_name="A"):
+        train_features = train_data["feature"]
+        train_labels = train_data["label"]
+        valid_features = valid_data["feature"]
+        valid_labels = valid_data["label"]
+        lr = LogisticRegression(max_iter=100)
+        lr.fit(train_features, train_labels)
+        pred_valid_labels = lr.predict(valid_features)
+        if task_name == "A":
+            f1_valid = f1_score(valid_labels, pred_valid_labels,  pos_label=1)
+        else: f1_valid = f1_score(valid_labels, pred_valid_labels,  average="macro")
+        print("LogisticRegression's F1 on valid : %f" % f1_valid)
+        return lr
     
     def predict(self, train_data, valid_data, test_data, task_name="A"):
         test_features = np.asarray(test_data["feature"])
@@ -225,8 +267,8 @@ class MLP(object):
                     if stopping >= self.early_stopping:
                         print("early stop at epoch %d" % epoch)
                         break
-                print(type(predict))
-                print(predict)
+
+
                 print("Done with F1 on Validation: %f and on Train: %f " % (best_valid, best_train))
                 return self.predict_labels(train_features, features_pl, keep_prob_pl, predict, sess), \
                        self.predict_labels(valid_features, features_pl, keep_prob_pl, predict, sess), \

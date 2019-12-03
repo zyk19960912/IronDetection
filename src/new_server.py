@@ -18,6 +18,9 @@ k_fold_train, k_fold_valid = DataProcessor.split_kfolds(train_data, n_fold)
 for i in range(len(k_fold_train)):
     print("====================Fold %d=================" % (i + 1))
     features_pl, keep_prob_pl, predict, sess = MLP().train_model(k_fold_train[i], k_fold_valid[i])
+    rg = MLP().rg_train_model(k_fold_train[i], k_fold_valid[i])
+    lg = MLP().lg_train_model(k_fold_train[i], k_fold_valid[i])
+    svm = MLP().svm_train_model(k_fold_train[i], k_fold_valid[i])
 
 
 sio = socketio.Server(cors_allowed_origins='*')
@@ -31,15 +34,43 @@ app = socketio.WSGIApp(sio, static_files={
 def connect(sid, environ):
     print('connect ', sid)
 
-@sio.on('sentence')
-def another_event(sid, data):
-    print (data)
+@sio.on('sentence_a')
+def another_event_a(sid, data):
     data = data.encode('ascii', 'ignore').decode('ascii')
     features = dataProcessor.getFeature(str(data))
     features = features.reshape(1, len(features))
     label = MLP().predict_labels(features, features_pl, keep_prob_pl, predict, sess)
     print(str(label[0]))
     sio.emit('response', str(label[0]))
+
+@sio.on('sentence_r')
+def another_event_r(sid, data):
+    data = data.encode('ascii', 'ignore').decode('ascii')
+    features = dataProcessor.getFeature(str(data))
+    features = features.reshape(1, len(features))
+    label = rg.predict(features)
+    print(str(label[0]))
+    sio.emit('response', str(label[0]))
+
+@sio.on('sentence_l')
+def another_event_l(sid, data):
+    data = data.encode('ascii', 'ignore').decode('ascii')
+    features = dataProcessor.getFeature(str(data))
+    features = features.reshape(1, len(features))
+    label = lg.predict(features)
+    print(str(label[0]))
+    sio.emit('response', str(label[0]))
+
+@sio.on('sentence_s')
+def another_event_s(sid, data):
+    data = data.encode('ascii', 'ignore').decode('ascii')
+    features = dataProcessor.getFeature(str(data))
+    features = features.reshape(1, len(features))
+    label = svm.predict(features)
+    print(str(label[0]))
+    sio.emit('response', str(label[0]))
+
+
 
 @sio.event
 def my_message(sid, data):
