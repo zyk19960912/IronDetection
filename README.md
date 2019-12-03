@@ -10,9 +10,10 @@ This program provides a simple web application for the SemEval 2018 Task 3: Iron
 
 and we made some modifications to the model.
 ## Performance
-We compared the model with several different methods: 
+We compared the model with several different methods:  
+
 | Model                | F1-Score   |   
-| :---                 | :----:     |  
+| ---                  | ----       |  
 | ANN                  | 0.717526   |  
 | RidgeClassifier      | 0.659039   |  
 | LogisticRegression   | 0.674473   |  
